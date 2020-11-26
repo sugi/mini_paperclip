@@ -24,6 +24,9 @@ jobs:
           - 2.5
           - 2.6
           - 2.7
+        gemfile:
+          - gemfiles/rails_52.gemfile
+          - gemfiles/rails_60.gemfile
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -33,6 +36,6 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
     - name: Install dependencies
-      run: bundle install
+      run: bundle install --gemfile=${{ matrix.gemfile }}
     - name: Run tests
-      run: bundle exec rake
+      run: bundle exec --gemfile=${{ matrix.gemfile }} rake

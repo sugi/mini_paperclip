@@ -1,0 +1,98 @@
+PATH
+  remote: ..
+  specs:
+    mini_paperclip (0.1.0)
+      activemodel
+      activesupport
+      aws-sdk-s3
+      mimemagic
+      mini_magick
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (5.2.4.4)
+      activesupport (= 5.2.4.4)
+    activerecord (5.2.4.4)
+      activemodel (= 5.2.4.4)
+      activesupport (= 5.2.4.4)
+      arel (>= 9.0)
+    activesupport (5.2.4.4)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
+    arel (9.0.0)
+    aws-eventstream (1.1.0)
+    aws-partitions (1.399.0)
+    aws-sdk-core (3.109.3)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.239.0)
+      aws-sigv4 (~> 1.1)
+      jmespath (~> 1.0)
+    aws-sdk-kms (1.39.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.85.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.1)
+    aws-sigv4 (1.2.2)
+      aws-eventstream (~> 1, >= 1.0.2)
+    concurrent-ruby (1.1.7)
+    crack (0.4.4)
+    diff-lcs (1.4.4)
+    hashdiff (1.0.1)
+    i18n (1.8.5)
+      concurrent-ruby (~> 1.0)
+    jmespath (1.4.0)
+    mimemagic (0.3.5)
+    mini_magick (4.11.0)
+    minitest (5.14.2)
+    public_suffix (4.0.6)
+    rack (2.2.3)
+    rack-test (1.1.0)
+      rack (>= 1.0, < 3)
+    rake (12.3.3)
+    rspec (3.10.0)
+      rspec-core (~> 3.10.0)
+      rspec-expectations (~> 3.10.0)
+      rspec-mocks (~> 3.10.0)
+    rspec-core (3.10.0)
+      rspec-support (~> 3.10.0)
+    rspec-expectations (3.10.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-mocks (3.10.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-support (3.10.0)
+    sqlite3 (1.4.2)
+    tapp (1.5.1)
+      thor
+    thor (1.0.1)
+    thread_safe (0.3.6)
+    tzinfo (1.2.8)
+      thread_safe (~> 0.1)
+    webmock (3.10.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activerecord (~> 5.2.0)
+  mini_paperclip!
+  rack-test
+  rake (~> 12.0)
+  rspec (~> 3.0)
+  sqlite3
+  tapp
+  webmock
+
+BUNDLED WITH
+   2.1.4

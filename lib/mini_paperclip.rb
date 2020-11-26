@@ -3,6 +3,7 @@
 require "openssl"
 require "net/http"
 require "active_model/validator"
+require "active_support"
 require "active_support/number_helper"
 require "mini_magick"
 require "mimemagic"
