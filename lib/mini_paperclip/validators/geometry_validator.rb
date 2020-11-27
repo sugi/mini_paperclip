@@ -16,26 +16,24 @@ module MiniPaperclip
           end
         end
       end
+
       # validate_attachment :image,
       #   geometry: {
       #     width: { less_than_or_equal_to: 3000 },
       #     height: { less_than_or_equal_to: 3000 } }
       def validate_each(record, attribute, value)
         return unless value.waiting_write_file
-        geometry_string = MiniMagick::Tool::Identify.new do |identify|
-          identify.format "%w,%h"
-          identify << value.waiting_write_file.path
-        end
-        return unless !geometry_string.empty?
-        width, height = geometry_string.split(',').map(&:to_i)
+        image_size = ImageSize.new(value.waiting_write_file)
+        # invalid format should not relate geometry
+        return unless image_size.format
 
         expected_width_less_than_or_equal_to = options.dig(:width, :less_than_or_equal_to)
         expected_height_less_than_or_equal_to = options.dig(:height, :less_than_or_equal_to)
-        unless (!expected_width_less_than_or_equal_to || width <= expected_width_less_than_or_equal_to) &&
-            (!expected_height_less_than_or_equal_to || height <= expected_height_less_than_or_equal_to)
+        unless (!expected_width_less_than_or_equal_to || image_size.width <= expected_width_less_than_or_equal_to) &&
+            (!expected_height_less_than_or_equal_to || image_size.height <= expected_height_less_than_or_equal_to)
           record.errors.add(attribute, :geometry, {
-            actual_width: width,
-            actual_height: height,
+            actual_width: image_size.width,
+            actual_height: image_size.height,
             expected_width_less_than_or_equal_to: expected_width_less_than_or_equal_to,
             expected_height_less_than_or_equal_to: expected_height_less_than_or_equal_to,
           })

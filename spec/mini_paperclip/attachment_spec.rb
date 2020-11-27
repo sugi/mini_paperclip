@@ -96,6 +96,19 @@ RSpec.describe MiniPaperclip::Attachment do
     expect(a.waiting_write_file).to_not be_closed
   end
 
+  it "#assign with invalid File" do
+    a = MiniPaperclip::Attachment.new(record, :image)
+    Tempfile.create(['spec']) do |f|
+      f.write('test')
+      f.flush
+      a.assign(f)
+      expect(record.image_content_type).to eq(nil)
+      expect(record.image_file_size).to eq(4)
+      expect(record.image_file_name).to eq(File.basename(f.path))
+    end
+    expect(a.waiting_write_file).to_not be_closed
+  end
+
   it "#assign with empty string" do
     a = MiniPaperclip::Attachment.new(record, :image)
     file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
