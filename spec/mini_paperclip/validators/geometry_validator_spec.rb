@@ -1,5 +1,5 @@
 RSpec.describe MiniPaperclip::Validators::GeometryValidator do
-  it "#validate_eaxh with invalid image" do
+  it "#validate_each with invalid image" do
     validator = MiniPaperclip::Validators::GeometryValidator.new(
       attributes: :img,
       width: { less_than_or_equal_to: 1000 },
