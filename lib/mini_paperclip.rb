@@ -8,6 +8,7 @@ require "active_support/number_helper"
 require "mini_magick"
 require "mimemagic"
 require "aws-sdk-s3"
+require "image_size"
 
 require "mini_paperclip/attachment"
 require "mini_paperclip/class_methods"
