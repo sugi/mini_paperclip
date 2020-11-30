@@ -38,11 +38,13 @@ module MiniPaperclip
       end
 
       def exists?(style)
-        res = Aws::S3::Client.new.head_object(
+        Aws::S3::Client.new.head_object(
           bucket: @config.s3_bucket_name,
           key: s3_object_key(style),
         )
-        res.content_length.to_i != 0
+        true
+      rescue Aws::S3::Errors::NotFound
+        false
       end
     end
   end
