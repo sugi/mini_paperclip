@@ -156,6 +156,23 @@ RSpec.describe MiniPaperclip::Attachment do
     expect(a.waiting_write_file).to_not be_closed
   end
 
+  it "#assign with invalid string" do
+    a = MiniPaperclip::Attachment.new(record, :image)
+
+    expect {
+      a.assign("foobar")
+    }.to raise_error(MiniPaperclip::Attachment::UnsupportedError)
+    expect(record.image_file_name).to eq(nil)
+  end
+
+  it "#assign with unsupported object" do
+    a = MiniPaperclip::Attachment.new(record, :image)
+
+    expect {
+      a.assign([])
+    }.to raise_error(MiniPaperclip::Attachment::UnsupportedError)
+  end
+
   it "#process_and_store should write files" do
     a = MiniPaperclip::Attachment.new(record, :image, { styles: { medium: '20x10' } })
     file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
