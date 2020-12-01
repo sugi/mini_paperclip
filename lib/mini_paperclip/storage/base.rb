@@ -16,10 +16,10 @@ module MiniPaperclip
       end
 
       def path_for(style)
-        template = if @attachment.file?
-          @config.url_path
-        else
+        template = if @attachment.original_filename.nil?
           @config.url_missing_path
+        else
+          @config.url_path
         end
         interpolate(template, style)
       end
