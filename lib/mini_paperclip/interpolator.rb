@@ -2,16 +2,17 @@
 
 module MiniPaperclip
   class Interpolator
-    def initialize(record, attachment_name, config)
-      @record = record
-      @attachment_name = attachment_name
+    attr_reader :attachment, :config
+
+    def initialize(attachment, config)
+      @attachment = attachment
       @config = config
     end
 
     def interpolate(template, style)
       template.dup.tap do |t|
         @config.interpolates&.each do |matcher, block|
-          t.gsub!(matcher) { instance_exec(attachment, style, &block) }
+          t.gsub!(matcher) { instance_exec(style, &block) }
         end
       end
     end
@@ -19,23 +20,28 @@ module MiniPaperclip
     private
 
     def class_result
-      @record.class.name.underscore.pluralize
+      @attachment.record.class.name.underscore.pluralize
     end
 
     def attachment_result
-      @attachment_name.to_s.downcase.pluralize
+      @attachment.attachment_name.to_s.downcase.pluralize
     end
 
-    def attachment
-      @record.public_send(@attachment_name)
+    def extension
+      attachment.original_filename &&
+        File.extname(attachment.original_filename)[1..-1]
     end
 
     def hash_key(style)
       OpenSSL::HMAC.hexdigest(
         OpenSSL::Digest::SHA1.new,
         @config.hash_secret,
-        interpolate(@config.hash_data, style),
+        interpolated_hash_data(style),
       )
+    end
+
+    def interpolated_hash_data(style)
+      interpolate(@config.hash_data, style)
     end
   end
 end

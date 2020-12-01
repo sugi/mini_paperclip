@@ -104,7 +104,7 @@ end
 
 Interpolate is a simple template system like this.
 
-template: `:class/:attribute/:id/:hash.:extension`
+template: `:class/:attachment/:id/:hash.:extension`
 result: `books/images/1234/abcdef1234567.png`
 
 You can check default interpolates.
@@ -116,8 +116,9 @@ p MiniPaperclip.config.interpolaters
 You can add any interpolate key and process.
 
 ```
-MiniPaperclip.config.interpolates[/:custom_style/] = -> (attachment, style) {
-  "-#{style}"
+MiniPaperclip.config.interpolates[/:custom_style/] = -> (style) {
+  # This block is called by the scope in the instance of the Interpolator
+  # You can also call `attachment` and `config` in this block
 }
 ```
 

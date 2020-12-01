@@ -15,7 +15,7 @@ module MiniPaperclip
       @meta_content_type = nil
       @dirty = false
       @storage = Storage.const_get(@config.storage.to_s.camelcase)
-                        .new(record, attachment_name, @config)
+                        .new(self, @config)
     end
 
     def original_filename
@@ -31,7 +31,7 @@ module MiniPaperclip
     end
 
     def updated_at
-      @record.read_attribute("#{@attachment_name}_updated_at").to_i
+      @record.read_attribute("#{@attachment_name}_updated_at")
     end
 
     def file?
