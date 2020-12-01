@@ -104,7 +104,7 @@ end
 
 Interpolate is a simple template system like this.
 
-template: `:class/:attribute/:id/:hash.:extension`
+template: `:class/:attachment/:id/:hash.:extension`
 result: `books/images/1234/abcdef1234567.png`
 
 You can check default interpolates.

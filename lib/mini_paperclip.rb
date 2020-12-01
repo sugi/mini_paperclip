@@ -32,7 +32,7 @@ module MiniPaperclip
           /:updated_at/ => ->(*) { @record.read_attribute("#{@attachment_name}_updated_at").to_i },
           /:style/ => ->(_, style) { style }
         },
-        hash_data: ":class/:attribute/:id/:style/:updated_at",
+        hash_data: ":class/:attachment/:id/:style/:updated_at",
         url_missing_path: ":attachment/:style/missing.png",
         read_timeout: 60,
         logger: Logger.new($stdout),
