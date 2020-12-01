@@ -116,7 +116,7 @@ p MiniPaperclip.config.interpolaters
 You can add any interpolate key and process.
 
 ```
-MiniPaperclip.config.interpolates[/:custom_style/] = -> (style) {
+MiniPaperclip.config.interpolates[':custom_style'] = -> (style) {
   # This block is called by the scope in the instance of the Interpolator
   # You can also call `attachment` and `config` in this block
 }

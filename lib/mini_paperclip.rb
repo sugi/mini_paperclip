@@ -24,13 +24,13 @@ module MiniPaperclip
       @config ||= Config.new(
         # defaults
         interpolates: {
-          /:class/ => ->(_) { class_result },
-          /:attachment/ => ->(_) { attachment_result },
-          /:hash/ => ->(style) { hash_key(style) },
-          /:extension/ => ->(_) { extension },
-          /:id/ => ->(_) { @attachment.record.id },
-          /:updated_at/ => ->(_) { attachment.updated_at&.to_i },
-          /:style/ => ->(style) { style }
+          ':class' => ->(_) { class_result },
+          ':attachment' => ->(_) { attachment_result },
+          ':hash' => ->(style) { hash_key(style) },
+          ':extension' => ->(_) { extension },
+          ':id' => ->(_) { @attachment.record.id },
+          ':updated_at' => ->(_) { attachment.updated_at&.to_i },
+          ':style' => ->(style) { style }
         },
         hash_data: ":class/:attachment/:id/:style/:updated_at",
         url_missing_path: ":attachment/:style/missing.png",
