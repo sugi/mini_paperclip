@@ -25,7 +25,7 @@ module MiniPaperclip
     end
 
     def merge!(hash)
-      to_h.deep_merge(hash).each { |k, v| self[k] = v }
+      to_h.deep_merge(hash.to_h).each { |k, v| self[k] = v }
       self
     end
   end

@@ -187,14 +187,14 @@ RSpec.describe MiniPaperclip::Attachment do
   end
 
   it "#process_and_store should copy files" do
-    option = {
+    option = MiniPaperclip.config.merge({
       styles: { medium: '20x10#' },
       interpolates: {
-        /:object_hash/ => ->(*) { @record.hash },
+        /:object_hash/ => ->(*) { @attachment.record.hash },
       },
       filesystem_path: "spec/temp/:class/:attachment/:style-:object_hash.:extension",
       hash_data: ":class/:attachment/:object_hash",
-    }
+    })
     a = MiniPaperclip::Attachment.new(record, :image, option)
     file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
     a.assign(file)

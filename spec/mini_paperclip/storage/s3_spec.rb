@@ -3,7 +3,8 @@ RSpec.describe MiniPaperclip::Storage::S3 do
 
   it "#write" do
     record.image_file_name = 'image.png'
-    s3 = MiniPaperclip::Storage::S3.new(record, :image, MiniPaperclip.config.merge(
+    attachment = MiniPaperclip::Attachment.new(record, :image)
+    s3 = MiniPaperclip::Storage::S3.new(attachment, MiniPaperclip.config.merge(
       s3_bucket_name: 'bucket',
     ))
     file = double('File')

@@ -8,7 +8,7 @@ module MiniPaperclip
         Aws::S3::Client.new.put_object(
           acl: @config.s3_acl,
           cache_control: @config.s3_cache_control,
-          content_type: @record.read_attribute("#{@attachment_name}_content_type"),
+          content_type: @attachment.content_type,
           body: file.tap(&:rewind),
           bucket: @config.s3_bucket_name,
           key: s3_object_key(style),
@@ -21,7 +21,7 @@ module MiniPaperclip
         Aws::S3::Client.new.copy_object(
           acl: @config.s3_acl,
           cache_control: @config.s3_cache_control,
-          content_type: @record.read_attribute("#{@attachment_name}_content_type"),
+          content_type: @attachment.content_type,
           copy_source: from_attachment.storage.object_key(style),
           bucket: @config.s3_bucket_name,
           key: s3_object_key(style),
