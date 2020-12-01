@@ -31,7 +31,7 @@ module MiniPaperclip
     end
 
     def updated_at
-      @record.read_attribute("#{@attachment_name}_updated_at").to_i
+      @record.read_attribute("#{@attachment_name}_updated_at")
     end
 
     def file?

@@ -27,9 +27,9 @@ module MiniPaperclip
           /:class/ => ->(_) { class_result },
           /:attachment/ => ->(_) { attachment_result },
           /:hash/ => ->(style) { hash_key(style) },
-          /:extension/ => ->(_) { File.extname(attachment.original_filename)[1..-1] },
+          /:extension/ => ->(_) { extension },
           /:id/ => ->(_) { @attachment.record.id },
-          /:updated_at/ => ->(_) { attachment.updated_at.to_i },
+          /:updated_at/ => ->(_) { attachment.updated_at&.to_i },
           /:style/ => ->(style) { style }
         },
         hash_data: ":class/:attachment/:id/:style/:updated_at",

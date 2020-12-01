@@ -3,7 +3,7 @@
 module MiniPaperclip
   module Storage
     class Base
-      attr_reader :config
+      attr_reader :attachment, :config, :interpolator
 
       def initialize(attachment, config)
         @attachment = attachment

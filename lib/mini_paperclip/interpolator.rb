@@ -27,12 +27,21 @@ module MiniPaperclip
       @attachment.attachment_name.to_s.downcase.pluralize
     end
 
+    def extension
+      attachment.original_filename &&
+        File.extname(attachment.original_filename)[1..-1]
+    end
+
     def hash_key(style)
       OpenSSL::HMAC.hexdigest(
         OpenSSL::Digest::SHA1.new,
         @config.hash_secret,
-        interpolate(@config.hash_data, style),
+        interpolated_hash_data(style),
       )
+    end
+
+    def interpolated_hash_data(style)
+      interpolate(@config.hash_data, style)
     end
   end
 end
