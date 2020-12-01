@@ -2,7 +2,7 @@
 
 module MiniPaperclip
   class Attachment
-    UnsupporedError = Class.new(StandardError)
+    UnsupportedError = Class.new(StandardError)
 
     attr_reader :record, :attachment_name, :config, :storage,
                 :waiting_write_file, :meta_content_type
@@ -110,7 +110,7 @@ module MiniPaperclip
           # data-uri
           match_data = file.match(/\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m)
           if match_data.nil?
-            raise UnsupporedError, "attachment for \"#{file[0..100]}\" is not supported"
+            raise UnsupportedError, "attachment for \"#{file[0..100]}\" is not supported"
           end
           raw = Base64.decode64(match_data[2])
           @record.write_attribute("#{@attachment_name}_file_name", nil)
@@ -120,10 +120,10 @@ module MiniPaperclip
           @waiting_write_file = build_tempfile(StringIO.new(raw))
           @meta_content_type = match_data[1]
         else
-          raise UnsupporedError, "attachment for \"#{file[0..100]}\" is not supported"
+          raise UnsupportedError, "attachment for \"#{file[0..100]}\" is not supported"
         end
       else
-        raise UnsupporedError, "attachment for #{file.class} is not supported"
+        raise UnsupportedError, "attachment for #{file.class} is not supported"
       end
     end
 
