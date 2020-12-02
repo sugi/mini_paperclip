@@ -52,6 +52,7 @@ module MiniPaperclip
       end
 
       def do_delete_files
+        debug("deleting by S3 to bucket:#{@config.s3_bucket_name},objects:#{@deletes}")
         Aws::S3::Client.new.delete_objects(
           bucket: @config.s3_bucket_name,
           delete: {

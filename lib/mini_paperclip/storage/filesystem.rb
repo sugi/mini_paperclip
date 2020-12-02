@@ -35,6 +35,7 @@ module MiniPaperclip
       end
 
       def do_delete_files
+        debug("deleting by filesystem #{@deletes}")
         FileUtils.rm_f(@deletes)
       end
     end
