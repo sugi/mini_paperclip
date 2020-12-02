@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+gemspec path: '../'
+
+gem "rake"
+gem "rspec"
+gem "rack-test"
+gem "webmock"
+gem "tapp"
+gem 'activerecord', git: "https://github.com/rails/rails", branch: :master
+gem "sqlite3"
