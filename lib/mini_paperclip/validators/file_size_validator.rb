@@ -10,8 +10,8 @@ module MiniPaperclip
           if check_value = options[:less_than]
             unless attachment_file_size < check_value
               count = ActiveSupport::NumberHelper.number_to_human_size(check_value)
-              record.errors.add(attribute, :less_than, { count: count })
-              record.errors.add(attachment_file_size_name, :less_than, { count: count })
+              record.errors.add(attribute, :less_than, count: count)
+              record.errors.add(attachment_file_size_name, :less_than, count: count)
             end
           end
         end

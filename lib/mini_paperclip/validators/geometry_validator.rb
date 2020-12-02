@@ -31,12 +31,14 @@ module MiniPaperclip
         expected_height_less_than_or_equal_to = options.dig(:height, :less_than_or_equal_to)
         unless (!expected_width_less_than_or_equal_to || image_size.width <= expected_width_less_than_or_equal_to) &&
             (!expected_height_less_than_or_equal_to || image_size.height <= expected_height_less_than_or_equal_to)
-          record.errors.add(attribute, :geometry, {
+          record.errors.add(
+            attribute,
+            :geometry,
             actual_width: image_size.width,
             actual_height: image_size.height,
             expected_width_less_than_or_equal_to: expected_width_less_than_or_equal_to,
             expected_height_less_than_or_equal_to: expected_height_less_than_or_equal_to,
-          })
+          )
         end
       end
     end
