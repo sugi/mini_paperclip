@@ -9,6 +9,7 @@ module MiniPaperclip
         @attachment = attachment
         @config = config
         @interpolator = Interpolator.new(attachment, config)
+        @deletes = []
       end
 
       def url_for_read(style)

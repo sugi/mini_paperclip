@@ -29,6 +29,14 @@ module MiniPaperclip
       def exists?(style)
         File.exists?(file_path(style))
       end
+
+      def push_delete_file(style)
+        @deletes.push(file_path(style))
+      end
+
+      def do_delete_files
+        FileUtils.rm_f(@deletes)
+      end
     end
   end
 end

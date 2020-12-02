@@ -19,6 +19,12 @@ module MiniPaperclip
           end
         end
       end
+      before_destroy do
+        public_send(attachment_name).push_delete_files
+      end
+      after_commit(on: :destroy) do
+        public_send(attachment_name).do_delete_files
+      end
       validates_with Validators::MediaTypeSpoofValidator, {
         attributes: attachment_name,
         if: -> { instance_variable_get("@#{attachment_name}")&.dirty? }
