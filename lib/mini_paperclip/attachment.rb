@@ -168,6 +168,17 @@ module MiniPaperclip
       @waiting_write_file = nil
     end
 
+    def push_delete_files
+      @storage.push_delete_file(:original)
+      @config.styles&.each_key do |style|
+        @storage.push_delete_file(style)
+      end
+    end
+
+    def do_delete_files
+      @storage.do_delete_files
+    end
+
     private
 
     def strict_content_type(io)

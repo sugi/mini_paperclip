@@ -6,6 +6,10 @@ require "active_support/core_ext/numeric"
 require "tapp"
 require "rack/test"
 require "webmock/rspec"
+require 'pretty_backtrace'
+
+PrettyBacktrace.enable
+PrettyBacktrace.multi_line = true
 
 MiniPaperclip.config.tap do |config|
   config.storage = :filesystem
@@ -55,7 +59,7 @@ end
 
 class Record < ActiveRecord::Base
   extend MiniPaperclip::ClassMethods
-  has_attached_file :image
+  has_attached_file :image, styles: { medium: '10x10' }
 end
 
 class PresenceRecord < ActiveRecord::Base
