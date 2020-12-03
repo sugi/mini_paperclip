@@ -6,6 +6,10 @@ require "active_support/core_ext/numeric"
 require "tapp"
 require "rack/test"
 require "webmock/rspec"
+require 'pretty_backtrace'
+
+PrettyBacktrace.enable
+PrettyBacktrace.multi_line = true
 
 MiniPaperclip.config.tap do |config|
   config.storage = :filesystem
