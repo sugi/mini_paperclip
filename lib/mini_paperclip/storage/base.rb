@@ -32,7 +32,7 @@ module MiniPaperclip
       private
 
       def debug(str)
-        MiniPaperclip.config.logger.debug(str)
+        MiniPaperclip.config.logger.debug("[mini_paperclip] #{str}")
       end
     end
   end
