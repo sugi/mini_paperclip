@@ -149,6 +149,7 @@ module MiniPaperclip
           Tempfile.create([style.to_s, File.extname(@waiting_write_file.path)]) do |temp|
             MiniMagick::Tool::Convert.new do |convert|
               convert << @waiting_write_file.path
+              convert.auto_orient
               if size_arg.end_with?('#')
                 # crop option
                 convert.resize("#{size_arg[0..-2]}^")
