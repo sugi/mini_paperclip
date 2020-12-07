@@ -26,7 +26,10 @@ module MiniPaperclip
         value.waiting_write_file.rewind
         image_size = ImageSize.new(value.waiting_write_file)
         # invalid format should not relate geometry
-        return unless image_size.format
+        unless image_size.format
+          MiniPaperclip.config.logger.info("[mini_paperclip] cannot get image_size from #{value.waiting_write_file.inspect}")
+          return
+        end
 
         expected_width_less_than_or_equal_to = options.dig(:width, :less_than_or_equal_to)
         expected_height_less_than_or_equal_to = options.dig(:height, :less_than_or_equal_to)
