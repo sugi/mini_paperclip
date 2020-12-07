@@ -183,6 +183,7 @@ module MiniPaperclip
     private
 
     def strict_content_type(io)
+      io.rewind
       MimeMagic.by_magic(io)&.type
     end
 

@@ -23,6 +23,7 @@ module MiniPaperclip
       #     height: { less_than_or_equal_to: 3000 } }
       def validate_each(record, attribute, value)
         return unless value.waiting_write_file
+        value.waiting_write_file.rewind
         image_size = ImageSize.new(value.waiting_write_file)
         # invalid format should not relate geometry
         return unless image_size.format
