@@ -22,7 +22,7 @@ module MiniPaperclip
           acl: @config.s3_acl,
           cache_control: @config.s3_cache_control,
           content_type: @attachment.content_type,
-          copy_source: from_attachment.storage.object_key(style),
+          copy_source: from_attachment.storage.s3_object_key(style),
           bucket: @config.s3_bucket_name,
           key: s3_object_key(style),
         )
