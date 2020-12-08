@@ -181,11 +181,11 @@ RSpec.describe MiniPaperclip::Attachment do
 
     path = a.storage.file_path(:original)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq("490x275")
+    expect(ImageSize.path(path).size.to_s).to eq("490x275")
 
     path = a.storage.file_path(:medium)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq('18x10')
+    expect(ImageSize.path(path).size.to_s).to eq('18x10')
   end
 
   it "#process_and_store with crop should write files" do
@@ -196,11 +196,11 @@ RSpec.describe MiniPaperclip::Attachment do
 
     path = a.storage.file_path(:original)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq("490x275")
+    expect(ImageSize.path(path).size.to_s).to eq("490x275")
 
     path = a.storage.file_path(:medium)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq('20x10')
+    expect(ImageSize.path(path).size.to_s).to eq('20x10')
   end
 
   it "#process_and_store should copy files" do
@@ -219,10 +219,10 @@ RSpec.describe MiniPaperclip::Attachment do
 
     path = a.storage.file_path(:original)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq("490x275")
+    expect(ImageSize.path(path).size.to_s).to eq("490x275")
     path = a.storage.file_path(:medium)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq('20x10')
+    expect(ImageSize.path(path).size.to_s).to eq('20x10')
 
     b = MiniPaperclip::Attachment.new(Record.new, :image, option)
     b.assign(a)
@@ -230,9 +230,9 @@ RSpec.describe MiniPaperclip::Attachment do
 
     path = b.storage.file_path(:original)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq("490x275")
+    expect(ImageSize.path(path).size.to_s).to eq("490x275")
     path = b.storage.file_path(:medium)
     expect(File.exists?(path)).to eq(true)
-    expect(`identify -format %wx%h #{path}`).to eq('20x10')
+    expect(ImageSize.path(path).size.to_s).to eq('20x10')
   end
 end
