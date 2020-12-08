@@ -10,7 +10,7 @@ require 'pretty_backtrace'
 
 PrettyBacktrace.enable
 PrettyBacktrace.multi_line = true
-
+MiniMagick.logger.level = Logger::DEBUG
 MiniPaperclip.config.tap do |config|
   config.storage = :filesystem
   config.filesystem_path = "spec/temp/:class/:attachment/:hash.:extension"

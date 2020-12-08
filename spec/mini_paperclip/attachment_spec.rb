@@ -235,4 +235,32 @@ RSpec.describe MiniPaperclip::Attachment do
     expect(File.exists?(path)).to eq(true)
     expect(ImageSize.path(path).size.to_s).to eq('20x10')
   end
+
+  it "#process_and_store with animated should convert" do
+    a = MiniPaperclip::Attachment.new(record, :image, { styles: { medium: '20x10#' } })
+    file = Rack::Test::UploadedFile.new "spec/opaopa.gif", 'image/gif'
+    a.assign(file)
+    a.process_and_store
+
+    path = a.storage.file_path(:original)
+    expect(File.exists?(path)).to eq(true)
+    expect(ImageSize.path(path).size.to_s).to eq("328x144")
+
+    path = a.storage.file_path(:medium)
+    expect(File.exists?(path)).to eq(true)
+    expect(ImageSize.path(path).size.to_s).to eq('20x10')
+  end
+
+  it "#animated?" do
+    a = MiniPaperclip::Attachment.new(record, :image, { styles: { medium: '20x10#' } })
+    expect(a.animated?).to eq(false)
+
+    file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
+    a.assign(file)
+    expect(a.animated?).to eq(false)
+
+    file = Rack::Test::UploadedFile.new "spec/opaopa.gif", 'image/gif'
+    a.assign(file)
+    expect(a.animated?).to eq(true)
+  end
 end

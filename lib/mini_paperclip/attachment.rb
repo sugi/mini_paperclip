@@ -149,6 +149,7 @@ module MiniPaperclip
           Tempfile.create([style.to_s, File.extname(@waiting_write_file.path)]) do |temp|
             MiniMagick::Tool::Convert.new do |convert|
               convert << @waiting_write_file.path
+              convert.coalesce if animated?
               convert.auto_orient
               if size_arg.end_with?('#')
                 # crop option
@@ -158,6 +159,7 @@ module MiniPaperclip
               else
                 convert.resize(size_arg)
               end
+              convert.layers("optimize") if animated?
               convert << temp.path
             end
             @storage.write(style, temp)
@@ -178,6 +180,10 @@ module MiniPaperclip
 
     def do_delete_files
       @storage.do_delete_files
+    end
+
+    def animated?
+      content_type == 'image/gif'
     end
 
     private
