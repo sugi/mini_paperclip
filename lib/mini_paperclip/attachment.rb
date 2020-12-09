@@ -64,7 +64,11 @@ module MiniPaperclip
       if file.nil?
         assign_nil
       elsif file.instance_of?(Attachment)
-        assign_attachment(file)
+        if file.present?
+          assign_attachment(file)
+        else
+          assign_nil
+        end
       elsif file.respond_to?(:original_filename)
         assign_uploaded_file(file)
       elsif file.respond_to?(:path)

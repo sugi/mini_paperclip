@@ -70,7 +70,14 @@ RSpec.describe MiniPaperclip::Attachment do
     expect(a.waiting_write_file).to_not be_closed
   end
 
-  it "#assign with Attachment" do
+  it "#assign with Attachment of empty" do
+    a = MiniPaperclip::Attachment.new(Record.new(id: 1), :image)
+    b = MiniPaperclip::Attachment.new(Record.new(id: 2), :image)
+    expect(a).to receive(:assign_nil)
+    a.assign(b)
+  end
+
+  it "#assign with Attachment of present" do
     a = MiniPaperclip::Attachment.new(Record.new(id: 1), :image)
     file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
     a.assign(file)
