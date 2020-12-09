@@ -62,63 +62,20 @@ module MiniPaperclip
       @meta_content_type = nil
 
       if file.nil?
-        # clear
-        @record.write_attribute("#{@attachment_name}_file_name", nil)
-        @record.write_attribute("#{@attachment_name}_content_type", nil)
-        @record.write_attribute("#{@attachment_name}_file_size", nil)
-        @record.write_attribute("#{@attachment_name}_updated_at", nil)
+        assign_nil
       elsif file.instance_of?(Attachment)
-        # copy
-        @record.write_attribute("#{@attachment_name}_file_name", file.original_filename)
-        @record.write_attribute("#{@attachment_name}_content_type", file.content_type)
-        @record.write_attribute("#{@attachment_name}_file_size", file.size)
-        @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
-        @waiting_write_file = file.storage.open(:original)
+        assign_attachment(file)
       elsif file.respond_to?(:original_filename)
-        # e.g. ActionDispatch::Http::UploadedFile
-        @record.write_attribute("#{@attachment_name}_file_name", file.original_filename)
-        @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(file.to_io))
-        @record.write_attribute("#{@attachment_name}_file_size", file.size)
-        @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
-        @waiting_write_file = build_tempfile(file.tap(&:rewind))
-        @meta_content_type = file.content_type
+        assign_uploaded_file(file)
       elsif file.respond_to?(:path)
-        # e.g. File
-        @record.write_attribute("#{@attachment_name}_file_name", File.basename(file.path))
-        @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(file))
-        @record.write_attribute("#{@attachment_name}_file_size", file.size)
-        @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
-        @waiting_write_file = build_tempfile(file.tap(&:rewind))
+        assign_file(file)
       elsif file.instance_of?(String)
         if file.empty?
           # do nothing
         elsif file.start_with?('http')
-          # download from url
-          open_uri_option = {
-            read_timeout: MiniPaperclip.config.read_timeout || 60
-          }
-          uri = URI.parse(file)
-          uri.open(open_uri_option) do |io|
-            @record.write_attribute("#{@attachment_name}_file_name", File.basename(uri.path))
-            @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(io))
-            @record.write_attribute("#{@attachment_name}_file_size", io.size)
-            @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
-            @waiting_write_file = build_tempfile(io.tap(&:rewind))
-            @meta_content_type = io.meta["content-type"]
-          end
+          assign_http(file)
         elsif file.start_with?('data:')
-          # data-uri
-          match_data = file.match(/\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m)
-          if match_data.nil?
-            raise UnsupportedError, "attachment for \"#{file[0..100]}\" is not supported"
-          end
-          raw = Base64.decode64(match_data[2])
-          @record.write_attribute("#{@attachment_name}_file_name", nil)
-          @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(StringIO.new(raw)))
-          @record.write_attribute("#{@attachment_name}_file_size", raw.bytesize)
-          @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
-          @waiting_write_file = build_tempfile(StringIO.new(raw))
-          @meta_content_type = match_data[1]
+          assign_data_uri(file)
         else
           raise UnsupportedError, "attachment for \"#{file[0..100]}\" is not supported"
         end
@@ -180,6 +137,73 @@ module MiniPaperclip
     end
 
     private
+
+    def assign_nil
+      # clear
+      @record.write_attribute("#{@attachment_name}_file_name", nil)
+      @record.write_attribute("#{@attachment_name}_content_type", nil)
+      @record.write_attribute("#{@attachment_name}_file_size", nil)
+      @record.write_attribute("#{@attachment_name}_updated_at", nil)
+    end
+
+    def assign_attachment(attachment)
+      # copy
+      @record.write_attribute("#{@attachment_name}_file_name", attachment.original_filename)
+      @record.write_attribute("#{@attachment_name}_content_type", attachment.content_type)
+      @record.write_attribute("#{@attachment_name}_file_size", attachment.size)
+      @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
+      @waiting_write_file = attachment.storage.open(:original)
+    end
+
+    def assign_uploaded_file(file)
+      # e.g. ActionDispatch::Http::UploadedFile
+      @record.write_attribute("#{@attachment_name}_file_name", file.original_filename)
+      @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(file.to_io))
+      @record.write_attribute("#{@attachment_name}_file_size", file.size)
+      @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
+      @waiting_write_file = build_tempfile(file.tap(&:rewind))
+      @meta_content_type = file.content_type
+    end
+
+    def assign_file(file)
+      # e.g. File
+      @record.write_attribute("#{@attachment_name}_file_name", File.basename(file.path))
+      @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(file))
+      @record.write_attribute("#{@attachment_name}_file_size", file.size)
+      @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
+      @waiting_write_file = build_tempfile(file.tap(&:rewind))
+    end
+
+    def assign_http(url)
+      # download from url
+      open_uri_option = {
+        read_timeout: MiniPaperclip.config.read_timeout || 60
+      }
+      uri = URI.parse(url)
+      uri.open(open_uri_option) do |io|
+        @record.write_attribute("#{@attachment_name}_file_name", File.basename(uri.path))
+        @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(io))
+        @record.write_attribute("#{@attachment_name}_file_size", io.size)
+        @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
+        @waiting_write_file = build_tempfile(io.tap(&:rewind))
+        @meta_content_type = io.meta["content-type"]
+      end
+    end
+
+    def assign_data_uri(data_uri)
+      # data-uri
+      match_data = data_uri.match(/\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m)
+      if match_data.nil?
+        raise UnsupportedError, "attachment for \"#{data_uri[0..100]}\" is not supported"
+      end
+      raw = Base64.decode64(match_data[2])
+      @record.write_attribute("#{@attachment_name}_file_name", nil)
+      @record.write_attribute("#{@attachment_name}_content_type", strict_content_type(StringIO.new(raw)))
+      @record.write_attribute("#{@attachment_name}_file_size", raw.bytesize)
+      @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
+      @waiting_write_file = build_tempfile(StringIO.new(raw))
+      @meta_content_type = match_data[1]
+    end
 
     def strict_content_type(io)
       io.rewind
