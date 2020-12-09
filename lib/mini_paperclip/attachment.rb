@@ -152,11 +152,11 @@ module MiniPaperclip
 
     def assign_attachment(attachment)
       # copy
+      @waiting_write_file = attachment.storage.open(:original)
       @record.write_attribute("#{@attachment_name}_file_name", attachment.original_filename)
       @record.write_attribute("#{@attachment_name}_content_type", attachment.content_type)
       @record.write_attribute("#{@attachment_name}_file_size", attachment.size)
       @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
-      @waiting_write_file = attachment.storage.open(:original)
     end
 
     def assign_uploaded_file(file)

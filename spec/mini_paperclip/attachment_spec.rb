@@ -77,6 +77,15 @@ RSpec.describe MiniPaperclip::Attachment do
     a.assign(b)
   end
 
+  it "#assign with Attachment of same" do
+    file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
+    record.image = file
+    record.image_updated_at -= 10
+    record.save!
+    record.image = record.image
+    record.save!
+  end
+
   it "#assign with Attachment of present" do
     a = MiniPaperclip::Attachment.new(Record.new(id: 1), :image)
     file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
