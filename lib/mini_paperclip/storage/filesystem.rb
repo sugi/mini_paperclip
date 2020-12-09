@@ -7,7 +7,7 @@ module MiniPaperclip
         path = file_path(style)
         debug("writing by filesystem from:#{file.path} to:#{path}")
         FileUtils.mkdir_p(File.dirname(path))
-        FileUtils.cp(file.path, path)
+        FileUtils.cp(file.path, path) if file.path != path
       end
 
       def file_path(style)
