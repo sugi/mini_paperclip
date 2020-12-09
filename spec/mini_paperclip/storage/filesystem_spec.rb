@@ -11,18 +11,11 @@ RSpec.describe MiniPaperclip::Storage::Filesystem do
     filesystem.write(:original, file)
   end
 
-  it "#copy" do
-    from_record = Record.new(image_file_name: 'image.png')
-    to_record = Record.new(image_file_name: 'image.png')
-    from_attachment = MiniPaperclip::Attachment.new(from_record, :image, { storage: :filesystem })
-    to_attachment = MiniPaperclip::Attachment.new(to_record, :image)
-
-    file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
-    from_attachment.assign(file)
-    from_attachment.process_and_store
-    filesystem = MiniPaperclip::Storage::Filesystem.new(to_attachment, MiniPaperclip.config)
-    expect(filesystem.exists?(:original)).to eq(false)
-    filesystem.copy(:original, from_attachment)
-    expect(filesystem.exists?(:original)).to eq(true)
+  it "#open" do
+    attachment = MiniPaperclip::Attachment.new(record, :image)
+    filesystem = MiniPaperclip::Storage::Filesystem.new(attachment, MiniPaperclip.config)
+    file = Rack::Test::UploadedFile.new("spec/paperclip.jpg", 'image/jpeg')
+    filesystem.write(:original, file)
+    expect(filesystem.open(:original).size).to eq(file.size)
   end
 end

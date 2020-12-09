@@ -15,19 +15,6 @@ module MiniPaperclip
         )
       end
 
-      def copy(style, from_attachment)
-        raise "not supported yet" unless from_attachment.storage.instance_of?(S3)
-        debug("copying by S3 to bucket:#{@config.s3_bucket_name},key:#{s3_object_key(style)}")
-        Aws::S3::Client.new.copy_object(
-          acl: @config.s3_acl,
-          cache_control: @config.s3_cache_control,
-          content_type: @attachment.content_type,
-          copy_source: from_attachment.storage.s3_object_key(style),
-          bucket: @config.s3_bucket_name,
-          key: s3_object_key(style),
-        )
-      end
-
       def s3_object_key(style)
         interpolate(@config.url_path, style)
       end
@@ -60,6 +47,17 @@ module MiniPaperclip
             quiet: true,
           }
         )
+      end
+
+      def open(style)
+        Tempfile.new(['MiniPaperclip::Storage::S3']).tap do |response_target|
+          Aws::S3::Client.new.get_object(
+            bucket: @config.s3_bucket_name,
+            key: s3_object_key(style),
+            response_target: response_target,
+          )
+          yield response_target if block_given?
+        end
       end
     end
   end

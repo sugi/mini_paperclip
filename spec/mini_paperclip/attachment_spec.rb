@@ -11,22 +11,19 @@ RSpec.describe MiniPaperclip::Attachment do
   end
 
   it "#exists? with s3" do
-    orig_config = Aws.config
-    Aws.config[:stub_responses] = {
+    aws_stub_response({
       head_object: {content_length: 0},
       put_object: ->(context) {
         context.config[:stub_responses][:head_object][:content_length] = 1
       },
-    }
-
-    a = MiniPaperclip::Attachment.new(record, :image, { storage: :s3, s3_bucket_name: 'bucket' })
-    expect(a.exists?).to eq(false)
-    file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
-    a.assign(file)
-    a.process_and_store
-    expect(a.exists?).to eq(true)
-  ensure
-    Aws.config = orig_config
+    }) do
+      a = MiniPaperclip::Attachment.new(record, :image, { storage: :s3, s3_bucket_name: 'bucket' })
+      expect(a.exists?).to eq(false)
+      file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
+      a.assign(file)
+      a.process_and_store
+      expect(a.exists?).to eq(true)
+    end
   end
 
   it "#url with filesystem should get url" do
@@ -74,15 +71,19 @@ RSpec.describe MiniPaperclip::Attachment do
   end
 
   it "#assign with Attachment" do
-    a = MiniPaperclip::Attachment.new(record, :image)
+    a = MiniPaperclip::Attachment.new(Record.new(id: 1), :image)
     file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
     a.assign(file)
-    b = MiniPaperclip::Attachment.new(record, :image)
+    a.process_and_store
+    b = MiniPaperclip::Attachment.new(Record.new(id: 2), :image)
     b.assign(a)
+    b.process_and_store
 
     expect(a.record.image_content_type).to eq(b.record.image_content_type)
     expect(a.record.image_file_size).to eq(b.record.image_file_size)
     expect(a.record.image_file_name).to eq(b.record.image_file_name)
+    expect(a).to be_exists
+    expect(b).to be_exists
   end
 
   it "#assign with File" do

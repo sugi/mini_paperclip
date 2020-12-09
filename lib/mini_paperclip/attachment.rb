@@ -69,11 +69,11 @@ module MiniPaperclip
         @record.write_attribute("#{@attachment_name}_updated_at", nil)
       elsif file.instance_of?(Attachment)
         # copy
-        @record.write_attribute("#{@attachment_name}_file_name", file.record.read_attribute("#{@attachment_name}_file_name"))
-        @record.write_attribute("#{@attachment_name}_content_type", file.record.read_attribute("#{@attachment_name}_content_type"))
-        @record.write_attribute("#{@attachment_name}_file_size", file.record.read_attribute("#{@attachment_name}_file_size"))
+        @record.write_attribute("#{@attachment_name}_file_name", file.original_filename)
+        @record.write_attribute("#{@attachment_name}_content_type", file.content_type)
+        @record.write_attribute("#{@attachment_name}_file_size", file.size)
         @record.write_attribute("#{@attachment_name}_updated_at", Time.current)
-        @waiting_copy_attachment = file
+        @waiting_write_file = file.storage.open(:original)
       elsif file.respond_to?(:original_filename)
         # e.g. ActionDispatch::Http::UploadedFile
         @record.write_attribute("#{@attachment_name}_file_name", file.original_filename)
@@ -129,18 +129,7 @@ module MiniPaperclip
 
     def process_and_store
       return unless file?
-
-      if @waiting_copy_attachment
-        debug("start attachment copy")
-        @storage.copy(:original, @waiting_copy_attachment)
-        @config.styles&.each do |style, size_arg|
-          @storage.copy(style, @waiting_copy_attachment)
-        end
-        @waiting_copy_attachment = nil
-        return
-      end
-
-      return if @waiting_write_file.nil?
+      return unless @waiting_write_file
 
       begin
         debug("start attachment styles process")
@@ -166,7 +155,11 @@ module MiniPaperclip
           end
         end
       ensure
-        @waiting_write_file.close!
+        if @waiting_write_file.respond_to?(:close!)
+          @waiting_write_file.close!
+        elsif @waiting_write_file.respond_to?(:close)
+          @waiting_write_file.close
+        end
       end
       @waiting_write_file = nil
     end

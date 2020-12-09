@@ -10,7 +10,10 @@ require 'pretty_backtrace'
 
 PrettyBacktrace.enable
 PrettyBacktrace.multi_line = true
-MiniMagick.logger.level = Logger::DEBUG
+
+loglevel = ENV['LOGLEVEL']&.to_sym || :debug
+
+MiniMagick.logger.level = loglevel
 MiniPaperclip.config.tap do |config|
   config.storage = :filesystem
   config.filesystem_path = "spec/temp/:class/:attachment/:hash.:extension"
@@ -18,7 +21,7 @@ MiniPaperclip.config.tap do |config|
   config.url_scheme = "http"
   config.url_host = "test.com"
   config.url_path = ":class/:attachment/:hash.:extension"
-  config.logger.level = :info
+  config.logger.level = loglevel
 end
 
 ActiveRecord::Base.establish_connection(
@@ -83,6 +86,14 @@ class ZeroRecord < ActiveRecord::Base
       width: { less_than_or_equal_to: 0 },
       height: { less_than_or_equal_to: 0 }
     }
+end
+
+def aws_stub_response(stub)
+  orig_config = Aws.config
+  Aws.config[:stub_responses] = stub
+  yield
+ensure
+  Aws.config = orig_config
 end
 
 Tapp.configure do |config|
