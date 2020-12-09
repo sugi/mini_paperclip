@@ -22,10 +22,15 @@ RSpec.describe MiniPaperclip::Storage::S3 do
     file = Rack::Test::UploadedFile.new("spec/paperclip.jpg", 'image/jpeg')
     aws_stub_response({
       put_object: {},
+      get_object: ->(context) {
+        context.metadata[:response_target].tap { |f|
+          f.write(file.read)
+          f.flush
+        }
+      },
     }) do
       s3.write(:original, file)
-      expect_any_instance_of(Aws::S3::Client).to receive(:get_object)
-      expect(s3.open(:original)).to be_instance_of(Tempfile)
+      expect(s3.open(:original).tap(&:rewind).read[0..100]).to eq(file.tap(&:rewind).read[0..100])
     end
   end
 end

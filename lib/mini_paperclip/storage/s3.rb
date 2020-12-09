@@ -51,6 +51,7 @@ module MiniPaperclip
 
       def open(style)
         Tempfile.new(['MiniPaperclip::Storage::S3']).tap do |response_target|
+          response_target.binmode
           Aws::S3::Client.new.get_object(
             bucket: @config.s3_bucket_name,
             key: s3_object_key(style),
