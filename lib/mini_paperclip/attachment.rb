@@ -97,6 +97,7 @@ module MiniPaperclip
         @storage.write(:original, @waiting_write_file)
         @config.styles&.each do |style, size_arg|
           Tempfile.create([style.to_s, File.extname(@waiting_write_file.path)]) do |temp|
+            temp.binmode
             MiniMagick::Tool::Convert.new do |convert|
               convert << @waiting_write_file.path
               convert.coalesce if animated?

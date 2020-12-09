@@ -116,6 +116,7 @@ RSpec.describe MiniPaperclip::Attachment do
   it "#assign with invalid File" do
     a = MiniPaperclip::Attachment.new(record, :image)
     Tempfile.create(['spec']) do |f|
+      f.binmode
       f.write('test')
       f.flush
       a.assign(f)

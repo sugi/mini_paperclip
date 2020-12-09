@@ -5,6 +5,7 @@ RSpec.describe MiniPaperclip::Validators::GeometryValidator do
       width: { less_than_or_equal_to: 1000 },
     )
     Tempfile.create(['spec']) do |f|
+      f.binmode
       mock = double('Record')
       attachment = double('Attachment')
       allow(attachment).to receive(:waiting_write_file).and_return(f)
