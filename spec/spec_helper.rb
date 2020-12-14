@@ -1,12 +1,33 @@
 require "bundler/setup"
-require "mini_paperclip"
-require "mini_paperclip/shoulda/matchers"
 require "active_record"
 require "active_support/core_ext/numeric"
 require "tapp"
 require "rack/test"
 require "webmock/rspec"
 require 'pretty_backtrace'
+
+if ENV['COVERAGE']
+  require "coverage"
+  # Minimum coverage
+  Coverage.start
+  at_exit do
+    cov = Coverage.result.select { |d| d.match?(%r{/mini_paperclip/lib/}) }
+    cov.transform_keys! { |key| key.dup.sub!(%r{^.*mini_paperclip/(lib/.*)$}, '\1') }
+    cov.transform_values! do |ary|
+      ary = ary.compact
+      ary.count { |l| l > 0 }.fdiv(ary.length)
+    end
+    max_length = cov.keys.max_by(&:length).length
+
+    puts "Coverage"
+    cov.to_a.sort_by { |k, v| v }.each do |k, v|
+      puts "| %-#{max_length}s | %6.2f %% |" % [k, v * 100]
+    end
+  end
+end
+
+require "mini_paperclip"
+require "mini_paperclip/shoulda/matchers"
 
 PrettyBacktrace.enable
 PrettyBacktrace.multi_line = true
