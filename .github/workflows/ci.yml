@@ -37,5 +37,8 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
       run: bundle install --gemfile=${{ matrix.gemfile }}
-    - name: Run tests
+    - name: Run tests and Print coverage
+      env:
+        COVERAGE: 1
+        LOGLEVEL: info
       run: bundle exec --gemfile=${{ matrix.gemfile }} rake
