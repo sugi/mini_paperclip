@@ -2,6 +2,34 @@ RSpec.describe MiniPaperclip do
   let(:record) { Record.new }
 
   describe "#config" do
+    it "#keep_old_files = false" do
+      old_file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
+      record.image.config.keep_old_files = false
+      record.image = old_file
+      record.save!
+      old_file_path = record.image.storage.file_path(:original)
+
+      expect(File.exists?(old_file_path)).to eq(true)
+      new_file = Rack::Test::UploadedFile.new "spec/opaopa.gif", 'image/gif'
+      record.image = new_file
+      record.save!
+      expect(File.exists?(old_file_path)).to eq(false)
+    end
+
+    it "#keep_old_files = true" do
+      old_file = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
+      record.image.config.keep_old_files = true
+      record.image = old_file
+      record.save!
+      old_file_path = record.image.storage.file_path(:original)
+
+      expect(File.exists?(old_file_path)).to eq(true)
+      new_file = Rack::Test::UploadedFile.new "spec/opaopa.gif", 'image/gif'
+      record.image = new_file
+      record.save!
+      expect(File.exists?(old_file_path)).to eq(true)
+    end
+
     it "#hash_data" do
       default_hash_data = MiniPaperclip.config.hash_data
       interpolated_hash_data = record.image.storage.interpolator.interpolate(default_hash_data, :original)
