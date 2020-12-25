@@ -71,6 +71,7 @@ MiniPaperclip.config.tap do |config|
   config.s3_acl           # s3 object acl
   config.s3_cache_control # Set this value to Cache-Control header when put-object
   config.interpolates     # minimum templates using by `String#gsub!`
+  config.keep_old_files   # Delete old attached file if it's false (default false)
   config.read_timeout     # timeout when attachment set url
   config.logger           # You can set logger object.
 end

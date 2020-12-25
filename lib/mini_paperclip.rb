@@ -34,6 +34,7 @@ module MiniPaperclip
         },
         hash_data: ":class/:attachment/:id/:style/:updated_at",
         url_missing_path: ":attachment/:style/missing.png",
+        keep_old_files: false,
         read_timeout: 60,
         logger: Logger.new($stdout),
       )

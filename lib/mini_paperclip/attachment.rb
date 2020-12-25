@@ -61,6 +61,10 @@ module MiniPaperclip
       @waiting_write_file = nil
       @meta_content_type = nil
 
+      if present?
+        push_delete_files
+      end
+
       if file.nil?
         assign_nil
       elsif file.instance_of?(Attachment)
@@ -116,6 +120,12 @@ module MiniPaperclip
             @storage.write(style, temp)
           end
         end
+
+        # should delete after write for copy
+        if !@config.keep_old_files
+          do_delete_files
+        end
+  
       ensure
         if @waiting_write_file.respond_to?(:close!)
           @waiting_write_file.close!

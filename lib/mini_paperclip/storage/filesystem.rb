@@ -27,6 +27,7 @@ module MiniPaperclip
       end
 
       def do_delete_files
+        return if @deletes.empty?
         debug("deleting by filesystem #{@deletes}")
         FileUtils.rm_f(@deletes)
       end

@@ -16,6 +16,7 @@ module MiniPaperclip
     :s3_acl,
     :s3_cache_control,
     :interpolates,
+    :keep_old_files,
     :read_timeout,
     :logger,
     keyword_init: true,

@@ -8,7 +8,7 @@ module MiniPaperclip
           instance_variable_set("@#{attachment_name}", Attachment.new(self, attachment_name, option_config))
       end
       define_method("#{attachment_name}=") do |file|
-        a = Attachment.new(self, attachment_name, option_config)
+        a = public_send(attachment_name)
         a.assign(file)
         instance_variable_set("@#{attachment_name}", a)
       end

@@ -16,7 +16,7 @@ RSpec.describe MiniPaperclip::ClassMethods do
   end
 
   it "should success to save and delete files on s3" do
-    original_config = MiniPaperclip.config
+    original_config = MiniPaperclip.config.dup
     MiniPaperclip.config.storage = :s3
     MiniPaperclip.config.s3_bucket_name = 'test'
 
