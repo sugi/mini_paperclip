@@ -29,6 +29,10 @@ jobs:
           - gemfiles/rails_52.gemfile
           - gemfiles/rails_60.gemfile
           - gemfiles/rails_head.gemfile
+        exclude:
+          # rails 52 does not supported ruby3
+          - ruby: 3.0
+            gemfile: gemfiles/rails_52.gemfile
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
