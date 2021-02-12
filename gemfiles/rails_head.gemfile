@@ -1,5 +1,5 @@
 source "https://rubygems.org"
 gemspec path: '../'
 
-gem 'activerecord', git: "https://github.com/rails/rails", branch: :master
+gem 'activerecord', git: "https://github.com/rails/rails", branch: :main
 eval_gemfile 'development.gemfile'
