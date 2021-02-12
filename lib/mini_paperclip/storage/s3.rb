@@ -13,6 +13,7 @@ module MiniPaperclip
           bucket: @config.s3_bucket_name,
           key: s3_object_key(style),
         )
+        @deletes.delete({ key: s3_object_key(style) }) # cancel deletion if overwrite
       end
 
       def s3_object_key(style)

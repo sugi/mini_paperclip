@@ -8,6 +8,7 @@ module MiniPaperclip
         debug("writing by filesystem from:#{file.path} to:#{path}")
         FileUtils.mkdir_p(File.dirname(path))
         FileUtils.cp(file.path, path) if file.path != path
+        @deletes.delete(path) # cancel deletion if overwrite
       end
 
       def file_path(style)
