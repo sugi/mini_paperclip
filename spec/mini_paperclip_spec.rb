@@ -53,4 +53,34 @@ RSpec.describe MiniPaperclip do
       expect(result).to eq('records/images/6860c24ea32461b288bf588906898042ae1aa54b/123/0/original.png')
     end
   end
+
+  it "keeps last file with multiple assignments even if keep_old_files is false" do
+    record.image.config.keep_old_files = false
+    record.id = 123
+    now = Time.at(123456) # for time freeze
+
+    file1 = Rack::Test::UploadedFile.new "spec/paperclip.jpg", 'image/jpeg'
+    file2 = Rack::Test::UploadedFile.new "spec/opaopa.gif", 'image/gif'
+
+    record.image = file1
+    record.image_updated_at = now # to freeze time
+    record.image = file1
+    record.image_updated_at = now # to freeze time
+    record.save!
+
+    path1 = Pathname.new(record.image.storage.file_path(:original))
+
+    expect(path1).to be_exist
+
+    record.image = file2
+    record.image_updated_at = now # to freeze time
+    record.image = file2
+    record.image_updated_at = now # to freeze time
+    record.save!
+
+    path2 = Pathname.new(record.image.storage.file_path(:original))
+
+    expect(path1).not_to be_exist
+    expect(path2).to be_exist
+  end
 end
