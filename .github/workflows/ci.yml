@@ -41,7 +41,7 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
-      run: bundle install --gemfile=${{ matrix.gemfile }}
+      run: bundle install -j 3 -r 6 --gemfile=${{ matrix.gemfile }}
     - name: Run tests and Print coverage
       env:
         COVERAGE: 1
